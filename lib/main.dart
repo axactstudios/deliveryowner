@@ -35,6 +35,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         child: Row(
           children: <Widget>[
             NavigationRail(
+              backgroundColor: Colors.black87,
               selectedIndex: _selectedIndex,
               onDestinationSelected: (int index) {
                 setState(() {
@@ -49,29 +50,84 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               labelType: NavigationRailLabelType.selected,
               destinations: [
                 NavigationRailDestination(
-                  icon: Icon(Icons.fiber_new),
-                  selectedIcon: Icon(Icons.fiber_new),
-                  label: Text('New'),
+                  icon: Icon(
+                    Icons.fiber_new,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                  selectedIcon: Icon(
+                    Icons.fiber_new,
+                    color: Colors.white,
+                    size: 40,
+                  ),
+                  label: Text(
+                    'New',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
                 NavigationRailDestination(
-                  icon: Icon(Icons.system_update_alt),
-                  selectedIcon: Icon(Icons.system_update_alt),
-                  label: Text('Update'),
+                  icon: Icon(
+                    Icons.system_update_alt,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                  selectedIcon: Icon(
+                    Icons.system_update_alt,
+                    color: Colors.white,
+                    size: 40,
+                  ),
+                  label: Text(
+                    'Update',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
                 NavigationRailDestination(
-                  icon: Icon(Icons.delete_outline),
-                  selectedIcon: Icon(Icons.delete),
-                  label: Text('Delete'),
+                  icon: Icon(
+                    Icons.delete_outline,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                  selectedIcon: Icon(
+                    Icons.delete,
+                    color: Colors.white,
+                    size: 40,
+                  ),
+                  label: Text(
+                    'Delete',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
                 NavigationRailDestination(
-                  icon: Icon(Icons.card_giftcard),
-                  selectedIcon: Icon(Icons.card_giftcard),
-                  label: Text('Discounts'),
+                  icon: Icon(
+                    Icons.card_giftcard,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                  selectedIcon: Icon(
+                    Icons.card_giftcard,
+                    color: Colors.white,
+                    size: 40,
+                  ),
+                  label: Text(
+                    'Discounts',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
                 NavigationRailDestination(
-                  icon: Icon(Icons.add_shopping_cart),
-                  selectedIcon: Icon(Icons.add_shopping_cart),
-                  label: Text('Orders'),
+                  icon: Icon(
+                    Icons.add_shopping_cart,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                  selectedIcon: Icon(
+                    Icons.add_shopping_cart,
+                    color: Colors.white,
+                    size: 40,
+                  ),
+                  label: Text(
+                    'Orders',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ],
             ),
@@ -83,25 +139,25 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   children: <Widget>[
                     Text("Budget Mart",
                         style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 30,
-                            fontFamily: 'Roboto',
-                            fontStyle: FontStyle.italic)),
-                    Text("Hey, Shivam!!",
+                          fontWeight: FontWeight.w600,
+                          fontSize: 30,
+                          fontFamily: 'Roboto',
+                        )),
+                    Text("Owner Console",
                         style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 30,
-                            fontFamily: 'Roboto',
-                            fontStyle: FontStyle.italic)),
+                          fontWeight: FontWeight.w600,
+                          fontSize: 30,
+                          fontFamily: 'Roboto',
+                        )),
                     SizedBox(
                       height: 10,
                     ),
                     Text(task,
                         style: TextStyle(
-                            fontWeight: FontWeight.w200,
-                            fontSize: 30,
-                            fontFamily: 'Roboto',
-                            fontStyle: FontStyle.italic)),
+                          fontWeight: FontWeight.w200,
+                          fontSize: 30,
+                          fontFamily: 'Roboto',
+                        )),
                     if (_selectedIndex == 0)
                       RegisterPet()
                     else if (_selectedIndex == 1)
@@ -243,7 +299,10 @@ class _RegisterPetState extends State<RegisterPet> {
           Padding(
               padding: EdgeInsets.all(20.0),
               child: RaisedButton(
-                color: Colors.lightBlue,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    side: BorderSide(color: Colors.black)),
+                color: Colors.black87,
                 onPressed: () {
                   final StorageReference firebaseStorageRef =
                       FirebaseStorage.instance.ref().child("hello.jpg");
@@ -269,7 +328,10 @@ class _RegisterPetState extends State<RegisterPet> {
                     });
                   }
                 },
-                child: Text('Submit'),
+                child: Text(
+                  'Submit',
+                  style: TextStyle(color: Colors.white),
+                ),
               )),
           Padding(
               padding: EdgeInsets.all(20.0),
@@ -277,11 +339,17 @@ class _RegisterPetState extends State<RegisterPet> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   RaisedButton(
-                    color: Colors.lightBlue,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        side: BorderSide(color: Colors.black)),
+                    color: Colors.black87,
                     onPressed: () {
                       _openImagePicker();
                     },
-                    child: Text('Upload Image'),
+                    child: Text(
+                      'Upload Image',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ],
               )),
@@ -418,7 +486,10 @@ class _UpdatePetState extends State<UpdatePet> {
           Padding(
               padding: EdgeInsets.all(20.0),
               child: RaisedButton(
-                color: Colors.lightBlue,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    side: BorderSide(color: Colors.black)),
+                color: Colors.black87,
                 onPressed: () {
                   final StorageReference firebaseStorageRef =
                       FirebaseStorage.instance.ref().child("hello.jpg");
@@ -447,7 +518,10 @@ class _UpdatePetState extends State<UpdatePet> {
                     });
                   }
                 },
-                child: Text('Submit'),
+                child: Text(
+                  'Submit',
+                  style: TextStyle(color: Colors.white),
+                ),
               )),
           Padding(
               padding: EdgeInsets.all(20.0),
@@ -455,11 +529,17 @@ class _UpdatePetState extends State<UpdatePet> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   RaisedButton(
-                    color: Colors.lightBlue,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        side: BorderSide(color: Colors.black)),
+                    color: Colors.black87,
                     onPressed: () {
                       _openImagePicker();
                     },
-                    child: Text('Upload Image'),
+                    child: Text(
+                      'Upload Image',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ],
               )),
@@ -563,7 +643,10 @@ class _DeleteState extends State<Delete> {
           Padding(
               padding: EdgeInsets.all(20.0),
               child: RaisedButton(
-                color: Colors.lightBlue,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    side: BorderSide(color: Colors.black)),
+                color: Colors.black87,
                 onPressed: () {
                   if (_formKey.currentState.validate())
                     dbRef
@@ -579,7 +662,10 @@ class _DeleteState extends State<Delete> {
                           .showSnackBar(SnackBar(content: Text(onError)));
                     });
                 },
-                child: Text('Delete'),
+                child: Text(
+                  'Delete',
+                  style: TextStyle(color: Colors.white),
+                ),
               )),
         ])));
   }
@@ -699,7 +785,10 @@ class _DiscountState extends State<Discount> {
           Padding(
               padding: EdgeInsets.all(20.0),
               child: RaisedButton(
-                color: Colors.lightBlue,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    side: BorderSide(color: Colors.black)),
+                color: Colors.black87,
                 onPressed: () {
                   int price1 = int.parse(ageController.text);
                   int price2 = int.parse(age1Controller.text);
@@ -724,7 +813,10 @@ class _DiscountState extends State<Discount> {
                     });
                   }
                 },
-                child: Text('Publish Discount'),
+                child: Text(
+                  'Publish Discount',
+                  style: TextStyle(color: Colors.white),
+                ),
               )),
         ])));
   }
