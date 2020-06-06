@@ -559,13 +559,168 @@ class Orders extends StatefulWidget {
   _OrdersState createState() => _OrdersState();
 }
 
+int i = 0;
+
+List<Container> currOrdersCard = [];
+List<Container> pastOrdersCard = [];
+String t;
+
 class _OrdersState extends State<Orders> {
+  void getOrderList() {
+    DatabaseReference usersref =
+        FirebaseDatabase.instance.reference().child('Orders');
+    usersref.once().then((DataSnapshot snap) {
+      // ignore: non_constant_identifier_names
+      var KEYS = snap.value.keys;
+      // ignore: non_constant_identifier_names
+      var DATA = snap.value;
+      for (var key in KEYS) {
+        currOrdersCard.clear();
+        pastOrdersCard.clear();
+        getOrders(key);
+
+        print("number read $key");
+      }
+    });
+  }
+
+  String address;
+  void getAddress(String number) {
+    DatabaseReference addressref =
+        FirebaseDatabase.instance.reference().child('Users').child(number);
+    addressref.once().then((DataSnapshot snap) {
+      // ignore: non_constant_identifier_names
+
+      // ignore: non_constant_identifier_names
+      var DATA = snap.value;
+      address = DATA['Addressline1'] + DATA['Addressline2'];
+      print(address);
+    });
+  }
+
+  void getOrders(String number) {
+    DatabaseReference ordersref =
+        FirebaseDatabase.instance.reference().child('Orders').child(number);
+    ordersref.once().then((DataSnapshot snap) {
+      print('database of $number is read');
+      // ignore: non_constant_identifier_names
+      var KEYS = snap.value.keys;
+      // ignore: non_constant_identifier_names
+      var DATA = snap.value;
+
+      for (var key in KEYS) {
+        getAddress(number);
+        print('database of $number has $key');
+        List<ListTile> currListTile = [];
+        List<ListTile> pastListTile = [];
+
+        currListTile.clear();
+        pastListTile.clear();
+        //TODO: Change phone number
+        if (DATA[key]['Status'] == 'notCompleted') {
+          print('database of $number has $key with status not complete');
+          for (i = 0; i < DATA[key]['orderLength']; i++) {
+            print(
+                '${DATA[key][i.toString()]['Name']},${DATA[key][i.toString()]['Price']},');
+            ListTile t1 = new ListTile(
+              leading: Icon(Icons.shopping_cart),
+              title: Text(
+                  '${DATA[key][i.toString()]['Name']},${DATA[key][i.toString()]['Price']},'),
+            );
+            currListTile.add(t1);
+          }
+          Container c = new Container(
+            margin: const EdgeInsets.all(15.0),
+            decoration: BoxDecoration(
+                color: Colors.black54,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(15),
+                ),
+                border: Border()),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: currListTile,
+                ),
+                Text(
+                    'Order Status is ${DATA[key]["Status"]} and User Phone no. is $number and user address is $address'),
+                FlatButton(
+                  onPressed: () {
+                    ordersref
+                        .child(key)
+                        .update({"Status": "Completed"}).then((_) {
+                      Scaffold.of(context).showSnackBar(
+                          SnackBar(content: Text('Successfully Updated')));
+                    }).catchError((onError) {
+                      Scaffold.of(context)
+                          .showSnackBar(SnackBar(content: Text(onError)));
+                    });
+                    ;
+                  },
+                  child: Text('Order shipped'),
+                )
+              ],
+            ),
+          );
+          currOrdersCard.add(c);
+        } else {
+          print('Order Length is ${DATA[key]['orderLength'].toString()}');
+          for (i = 0; i < DATA[key]['orderLength']; i++) {
+            ListTile t1 = new ListTile(
+              leading: Icon(Icons.shopping_cart),
+              title: Text(
+                  '${DATA[key][i.toString()]['Name']},${DATA[key][i.toString()]['Price']},'),
+            );
+            pastListTile.add(t1);
+          }
+          Container c = new Container(
+            margin: const EdgeInsets.all(15.0),
+            decoration: BoxDecoration(
+                color: Colors.black54,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(15),
+                ),
+                border: Border()),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: pastListTile,
+                ),
+                Text('Order Status is ${DATA[key]["Status"]}'),
+              ],
+            ),
+          );
+          pastOrdersCard.add(c);
+        }
+      }
+    });
+  }
+
+  Order createOrder(List<OrderItem> d) {
+    Order temp = new Order(d);
+    return temp;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Text('Incoming orders will appear here'),
-      ),
+    getOrderList();
+    return Column(
+      children: <Widget>[
+        Text('Current Orders'),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: currOrdersCard,
+        ),
+        Text('Past Orders'),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: pastOrdersCard,
+        )
+      ],
     );
   }
 }
@@ -820,4 +975,15 @@ class _DiscountState extends State<Discount> {
               )),
         ])));
   }
+}
+
+class OrderItem {
+  String name;
+  String price;
+  OrderItem(this.name, this.price);
+}
+
+class Order {
+  List<OrderItem> d = [];
+  Order(this.d);
 }
