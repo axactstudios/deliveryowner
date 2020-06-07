@@ -155,7 +155,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     Text(task,
                         style: TextStyle(
                           fontWeight: FontWeight.w200,
-                          fontSize: 30,
+                          fontSize: 28,
                           fontFamily: 'Roboto',
                         )),
                     if (_selectedIndex == 0)
@@ -189,6 +189,7 @@ class _RegisterPetState extends State<RegisterPet> {
   String _uploadedFileURL;
   String path1;
   void _openImagePicker() async {
+    // ignore: deprecated_member_use
     File pick = await ImagePicker.pickImage(source: ImageSource.gallery);
     path1 = pick.path;
     setState(() {
@@ -203,6 +204,7 @@ class _RegisterPetState extends State<RegisterPet> {
     String platformResponse;
 
     try {
+      // ignore: deprecated_member_use
       await ImagePicker.pickImage(source: ImageSource.gallery);
       platformResponse = 'success';
       Scaffold.of(context).showSnackBar(
@@ -376,6 +378,7 @@ class _UpdatePetState extends State<UpdatePet> {
   String _uploadedFileURL;
   String path1;
   void _openImagePicker() async {
+    // ignore: deprecated_member_use
     File pick = await ImagePicker.pickImage(source: ImageSource.gallery);
     path1 = pick.path;
     setState(() {
@@ -390,6 +393,7 @@ class _UpdatePetState extends State<UpdatePet> {
     String platformResponse;
 
     try {
+      // ignore: deprecated_member_use
       await ImagePicker.pickImage(source: ImageSource.gallery);
       platformResponse = 'success';
       Scaffold.of(context).showSnackBar(
@@ -573,7 +577,7 @@ class _OrdersState extends State<Orders> {
       // ignore: non_constant_identifier_names
       var KEYS = snap.value.keys;
       // ignore: non_constant_identifier_names
-      var DATA = snap.value;
+
       for (var key in KEYS) {
         currOrdersCard.clear();
         pastOrdersCard.clear();
@@ -617,7 +621,8 @@ class _OrdersState extends State<Orders> {
         currListTile.clear();
         pastListTile.clear();
         //TODO: Change phone number
-        if (DATA[key]['Status'] == 'notCompleted') {
+        if (DATA[key]['Status'] == 'notCompleted' ||
+            DATA[key]['Status'] == 'Shipped') {
           print('database of $number has $key with status not complete');
           for (i = 0; i < DATA[key]['orderLength']; i++) {
             print(
@@ -644,13 +649,36 @@ class _OrdersState extends State<Orders> {
                   mainAxisSize: MainAxisSize.min,
                   children: currListTile,
                 ),
+                Text('Date: ${DATA[key]["DateTime"]}'),
+                Text('Shipping Date: ${DATA[key]["ShippedTime"]}'),
+                Text('Completed Date: ${DATA[key]["CompletedTime"]}'),
+                Text('Total Amount: ${DATA[key]["TotalAmount"]}'),
                 Text(
                     'Order Status is ${DATA[key]["Status"]} and User Phone no. is $number and user address is $address'),
                 FlatButton(
                   onPressed: () {
-                    ordersref
-                        .child(key)
-                        .update({"Status": "Completed"}).then((_) {
+                    DATA[key]["ShippedTime"] == "Shipped"
+                        ? null
+                        : ordersref.child(key).update({
+                            "Status": "Shipped",
+                            "ShippedTime": DateTime.now().toString()
+                          }).then((_) {
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                                content: Text('Successfully Updated')));
+                          }).catchError((onError) {
+                            Scaffold.of(context)
+                                .showSnackBar(SnackBar(content: Text(onError)));
+                          });
+                    ;
+                  },
+                  child: Text('Order shipped'),
+                ),
+                FlatButton(
+                  onPressed: () {
+                    ordersref.child(key).update({
+                      "Status": "Completed",
+                      "CompletedTime": DateTime.now().toString()
+                    }).then((_) {
                       Scaffold.of(context).showSnackBar(
                           SnackBar(content: Text('Successfully Updated')));
                     }).catchError((onError) {
@@ -659,13 +687,13 @@ class _OrdersState extends State<Orders> {
                     });
                     ;
                   },
-                  child: Text('Order shipped'),
+                  child: Text('Order completed'),
                 )
               ],
             ),
           );
           currOrdersCard.add(c);
-        } else {
+        } else if (DATA[key]['Status'] == 'Completed') {
           print('Order Length is ${DATA[key]['orderLength'].toString()}');
           for (i = 0; i < DATA[key]['orderLength']; i++) {
             ListTile t1 = new ListTile(
@@ -690,6 +718,10 @@ class _OrdersState extends State<Orders> {
                   mainAxisSize: MainAxisSize.min,
                   children: pastListTile,
                 ),
+                Text('Date: ${DATA[key]["DateTime"]}'),
+                Text('Shipping Date: ${DATA[key]["ShippedTime"]}'),
+                Text('Completed Date: ${DATA[key]["CompletedTime"]}'),
+                Text('Total Amount: ${DATA[key]["TotalAmount"]}'),
                 Text('Order Status is ${DATA[key]["Status"]}'),
               ],
             ),
@@ -770,7 +802,7 @@ class _DeleteState extends State<Delete> {
               },
               validator: (value) {
                 if (value.isEmpty) {
-                  return 'Please Select Categpry';
+                  return 'Please Select Category';
                 }
                 return null;
               },
@@ -891,7 +923,7 @@ class _DiscountState extends State<Discount> {
               },
               validator: (value) {
                 if (value.isEmpty) {
-                  return 'Please Select Categpry';
+                  return 'Please Select Category';
                 }
                 return null;
               },
