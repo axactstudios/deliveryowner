@@ -2,7 +2,9 @@ import 'dart:io';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
 
 void main() => runApp(MyApp());
 
@@ -14,6 +16,18 @@ class MyApp extends StatelessWidget {
       home: MyStatefulWidget(),
     );
   }
+}
+
+void showToast(message, Color color) {
+  Fluttertoast.showToast(
+    msg: message,
+    toastLength: Toast.LENGTH_LONG,
+    gravity: ToastGravity.BOTTOM,
+    timeInSecForIosWeb: 2,
+    backgroundColor: color,
+    textColor: Color(0xFF345995),
+    fontSize: 16.0,
+  );
 }
 
 class MyStatefulWidget extends StatefulWidget {
@@ -191,12 +205,13 @@ class _RegisterPetState extends State<RegisterPet> {
   void _openImagePicker() async {
     // ignore: deprecated_member_use
     File pick = await ImagePicker.pickImage(source: ImageSource.gallery);
-    path1 = pick.path;
+    path1 = basename(pick.path);
     setState(() {
+      String fileName = basename(pick.path);
       print(' Attatchment- ${pick.path}');
       imageFile = pick;
       final StorageReference firebaseStorageRef =
-          FirebaseStorage.instance.ref().child("hello.jpg");
+          FirebaseStorage.instance.ref().child(fileName);
       final StorageUploadTask task = firebaseStorageRef.putFile(pick);
       print(task.isSuccessful.toString());
     });
@@ -207,10 +222,10 @@ class _RegisterPetState extends State<RegisterPet> {
       // ignore: deprecated_member_use
       await ImagePicker.pickImage(source: ImageSource.gallery);
       platformResponse = 'success';
-      Scaffold.of(context).showSnackBar(
-          SnackBar(content: Text('Your Image Was Successfuly Uploaded.')));
+      showToast('Image was successfully uploaded', Colors.white);
     } catch (error) {
       platformResponse = error.toString();
+      showToast(error.toString(), Colors.white);
     }
 
     if (!mounted) return;
@@ -307,7 +322,7 @@ class _RegisterPetState extends State<RegisterPet> {
                 color: Colors.black87,
                 onPressed: () {
                   final StorageReference firebaseStorageRef =
-                      FirebaseStorage.instance.ref().child("hello.jpg");
+                      FirebaseStorage.instance.ref().child(path1);
                   firebaseStorageRef.getDownloadURL().then((fileURL) {
                     setState(() {
                       _uploadedFileURL = fileURL;
@@ -379,13 +394,15 @@ class _UpdatePetState extends State<UpdatePet> {
   String path1;
   void _openImagePicker() async {
     // ignore: deprecated_member_use
-    File pick = await ImagePicker.pickImage(source: ImageSource.gallery);
-    path1 = pick.path;
+    var pick = await ImagePicker.pickImage(source: ImageSource.gallery);
+    path1 = basename(pick.path);
     setState(() {
       print(' Attatchment- ${pick.path}');
       imageFile = pick;
+      String fileName = basename(pick.path);
+
       final StorageReference firebaseStorageRef =
-          FirebaseStorage.instance.ref().child("hello.jpg");
+          FirebaseStorage.instance.ref().child(fileName);
       final StorageUploadTask task = firebaseStorageRef.putFile(pick);
       print(task.isSuccessful.toString());
     });
@@ -396,10 +413,9 @@ class _UpdatePetState extends State<UpdatePet> {
       // ignore: deprecated_member_use
       await ImagePicker.pickImage(source: ImageSource.gallery);
       platformResponse = 'success';
-      Scaffold.of(context).showSnackBar(
-          SnackBar(content: Text('Your Image Was Successfuly Uploaded.')));
+      showToast('Image was successfully uploaded', Colors.white);
     } catch (error) {
-      platformResponse = error.toString();
+      showToast(error.toString(), Colors.white);
     }
 
     if (!mounted) return;
@@ -461,7 +477,7 @@ class _UpdatePetState extends State<UpdatePet> {
               },
               validator: (value) {
                 if (value.isEmpty) {
-                  return 'Please Select Categpry';
+                  return 'Please Select Category';
                 }
                 return null;
               },
@@ -496,7 +512,7 @@ class _UpdatePetState extends State<UpdatePet> {
                 color: Colors.black87,
                 onPressed: () {
                   final StorageReference firebaseStorageRef =
-                      FirebaseStorage.instance.ref().child("hello.jpg");
+                      FirebaseStorage.instance.ref().child(path1);
                   firebaseStorageRef.getDownloadURL().then((fileURL) {
                     setState(() {
                       _uploadedFileURL = fileURL;
@@ -663,11 +679,9 @@ class _OrdersState extends State<Orders> {
                             "Status": "Shipped",
                             "ShippedTime": DateTime.now().toString()
                           }).then((_) {
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                                content: Text('Successfully Updated')));
+                            showToast('successfully updated', Colors.white);
                           }).catchError((onError) {
-                            Scaffold.of(context)
-                                .showSnackBar(SnackBar(content: Text(onError)));
+                            showToast(onError.toString(), Colors.white);
                           });
                     ;
                   },
@@ -679,11 +693,9 @@ class _OrdersState extends State<Orders> {
                       "Status": "Completed",
                       "CompletedTime": DateTime.now().toString()
                     }).then((_) {
-                      Scaffold.of(context).showSnackBar(
-                          SnackBar(content: Text('Successfully Updated')));
+                      showToast('successfully updated', Colors.white);
                     }).catchError((onError) {
-                      Scaffold.of(context)
-                          .showSnackBar(SnackBar(content: Text(onError)));
+                      showToast(onError.toString(), Colors.white);
                     });
                     ;
                   },
@@ -873,6 +885,38 @@ class _DiscountState extends State<Discount> {
   final ageController = TextEditingController();
   final age1Controller = TextEditingController();
   final dbRef = FirebaseDatabase.instance.reference();
+  String path1;
+  File imageFile;
+  String _uploadedFileURL;
+  void _openImagePicker() async {
+    // ignore: deprecated_member_use
+    var pick = await ImagePicker.pickImage(source: ImageSource.gallery);
+    path1 = basename(pick.path);
+    setState(() {
+      print(' Attatchment- ${pick.path}');
+      imageFile = pick;
+      String fileName = basename(pick.path);
+
+      final StorageReference firebaseStorageRef =
+          FirebaseStorage.instance.ref().child(fileName);
+      final StorageUploadTask task = firebaseStorageRef.putFile(pick);
+      print(task.isSuccessful.toString());
+    });
+
+    String platformResponse;
+
+    try {
+      // ignore: deprecated_member_use
+      await ImagePicker.pickImage(source: ImageSource.gallery);
+      platformResponse = 'success';
+      showToast('Image was successfully uploaded', Colors.white);
+    } catch (error) {
+      showToast(error.toString(), Colors.white);
+    }
+
+    if (!mounted) return;
+    print(platformResponse);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -979,6 +1023,13 @@ class _DiscountState extends State<Discount> {
                 onPressed: () {
                   int price1 = int.parse(ageController.text);
                   int price2 = int.parse(age1Controller.text);
+                  final StorageReference firebaseStorageRef =
+                      FirebaseStorage.instance.ref().child(path1);
+                  firebaseStorageRef.getDownloadURL().then((fileURL) {
+                    setState(() {
+                      _uploadedFileURL = fileURL;
+                    });
+                  });
                   if (_formKey.currentState.validate()) {
                     dbRef
                         .child('Discounts')
@@ -988,6 +1039,7 @@ class _DiscountState extends State<Discount> {
                       "Category": dropdownValue,
                       "Original Price": price1,
                       "Discounted Price": price2,
+                      "ImageUrl": _uploadedFileURL,
                     }).then((_) {
                       Scaffold.of(context).showSnackBar(
                           SnackBar(content: Text('Successfully Added')));
@@ -1004,6 +1056,26 @@ class _DiscountState extends State<Discount> {
                   'Publish Discount',
                   style: TextStyle(color: Colors.white),
                 ),
+              )),
+          Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  RaisedButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        side: BorderSide(color: Colors.black)),
+                    color: Colors.black87,
+                    onPressed: () {
+                      _openImagePicker();
+                    },
+                    child: Text(
+                      'Upload Image',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
               )),
         ])));
   }
