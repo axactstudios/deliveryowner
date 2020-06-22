@@ -642,11 +642,16 @@ class _OrdersState extends State<Orders> {
           print('database of $number has $key with status not complete');
           for (i = 0; i < DATA[key]['orderLength']; i++) {
             print(
-                '${DATA[key][i.toString()]['Name']},${DATA[key][i.toString()]['Price']},');
+                '${DATA[key][i.toString()]['Name']} ${DATA[key][i.toString()]['Price']},');
             ListTile t1 = new ListTile(
-              leading: Icon(Icons.shopping_cart),
+              trailing: Text(
+                '${DATA[key][i.toString()]['Price']}',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               title: Text(
-                  '${DATA[key][i.toString()]['Name']},${DATA[key][i.toString()]['Price']},'),
+                '${DATA[key][i.toString()]['Name']}',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             );
             currListTile.add(t1);
           }
@@ -665,14 +670,39 @@ class _OrdersState extends State<Orders> {
                   mainAxisSize: MainAxisSize.min,
                   children: currListTile,
                 ),
-                Text('Date: ${DATA[key]["DateTime"]}'),
-                Text('Shipping Date: ${DATA[key]["ShippedTime"]}'),
-                Text('Completed Date: ${DATA[key]["CompletedTime"]}'),
-                Text('Total Amount: ${DATA[key]["TotalAmount"]}'),
                 Text(
-                    'Order Status is ${DATA[key]["Status"]} and User Phone no. is $number and user address is $address'),
-                FlatButton(
-                  onPressed: () {
+                  'Date: ${DATA[key]["DateTime"]}',
+                  style: TextStyle(color: Colors.white),
+                ),
+                Text(
+                  'Shipping Date: ${DATA[key]["ShippedTime"]}',
+                  style: TextStyle(color: Colors.white),
+                ),
+                Text(
+                  'Completed Date: ${DATA[key]["CompletedTime"]}',
+                  style: TextStyle(color: Colors.white),
+                ),
+                Text(
+                  'Total Amount: ${DATA[key]["TotalAmount"]}',
+                  style: TextStyle(color: Colors.white),
+                ),
+                Text(
+                  'Order Status is ${DATA[key]["Status"]}',
+                  style: TextStyle(color: Colors.white),
+                ),
+                Text(
+                  'User PhNo: $number',
+                  style: TextStyle(color: Colors.white),
+                ),
+                Text(
+                  'User Address: $address',
+                  style: TextStyle(color: Colors.white),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                InkWell(
+                  onTap: () {
                     DATA[key]["ShippedTime"] == "Shipped"
                         ? null
                         : ordersref.child(key).update({
@@ -685,10 +715,24 @@ class _OrdersState extends State<Orders> {
                           });
                     ;
                   },
-                  child: Text('Order shipped'),
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.black54,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Order shipped',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
                 ),
-                FlatButton(
-                  onPressed: () {
+                InkWell(
+                  onTap: () {
                     ordersref.child(key).update({
                       "Status": "Completed",
                       "CompletedTime": DateTime.now().toString()
@@ -699,7 +743,23 @@ class _OrdersState extends State<Orders> {
                     });
                     ;
                   },
-                  child: Text('Order completed'),
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        color: Colors.black54,
+                        borderRadius: BorderRadius.only(
+                            bottomRight: Radius.circular(10),
+                            bottomLeft: Radius.circular(10))),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Order completed',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
                 )
               ],
             ),
@@ -709,9 +769,14 @@ class _OrdersState extends State<Orders> {
           print('Order Length is ${DATA[key]['orderLength'].toString()}');
           for (i = 0; i < DATA[key]['orderLength']; i++) {
             ListTile t1 = new ListTile(
-              leading: Icon(Icons.shopping_cart),
+              trailing: Text(
+                '${DATA[key][i.toString()]['Price']}',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               title: Text(
-                  '${DATA[key][i.toString()]['Name']},${DATA[key][i.toString()]['Price']},'),
+                '${DATA[key][i.toString()]['Name']}',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             );
             pastListTile.add(t1);
           }
@@ -730,11 +795,35 @@ class _OrdersState extends State<Orders> {
                   mainAxisSize: MainAxisSize.min,
                   children: pastListTile,
                 ),
-                Text('Date: ${DATA[key]["DateTime"]}'),
-                Text('Shipping Date: ${DATA[key]["ShippedTime"]}'),
-                Text('Completed Date: ${DATA[key]["CompletedTime"]}'),
-                Text('Total Amount: ${DATA[key]["TotalAmount"]}'),
-                Text('Order Status is ${DATA[key]["Status"]}'),
+                Text(
+                  'Date: ${DATA[key]["DateTime"]}',
+                  style: TextStyle(color: Colors.white),
+                ),
+                Text(
+                  'Shipping Date: ${DATA[key]["ShippedTime"]}',
+                  style: TextStyle(color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  'Completed Date: ${DATA[key]["CompletedTime"]}',
+                  style: TextStyle(color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  'Total Amount: ${DATA[key]["TotalAmount"]}',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'Order Status is ${DATA[key]["Status"]}',
+                  style: TextStyle(color: Colors.white),
+                ),
+                SizedBox(
+                  height: 20,
+                )
               ],
             ),
           );
@@ -751,19 +840,32 @@ class _OrdersState extends State<Orders> {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
     getOrderList();
     return Column(
       children: <Widget>[
-        Text('Current Orders'),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          children: currOrdersCard,
+        Text(
+          'Current Orders',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
-        Text('Past Orders'),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          children: pastOrdersCard,
-        )
+        Container(
+          height: (height / 2) - 125 - 12,
+          child: ListView(
+            shrinkWrap: true,
+            children: currOrdersCard,
+          ),
+        ),
+        Text(
+          'Past Orders',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        Container(
+          height: (height / 2) - 125 - 12,
+          child: ListView(
+            shrinkWrap: true,
+            children: pastOrdersCard,
+          ),
+        ),
       ],
     );
   }
